@@ -47,7 +47,12 @@ h2{font-size:clamp(1.9rem,5.6vw,2.9rem)}
 h3{font-size:1.3rem}
 p{margin:0}
 .eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--brass);display:flex;align-items:center;gap:10px}
-.eyebrow::before{content:"";width:28px;height:2px;background:currentColor;border-radius:2px}
+.eyebrow::before{content:"";flex:none;width:25px;height:15px;background:radial-gradient(circle at 7.5px 7.5px,#D9C39C 7px,transparent 7.6px),radial-gradient(circle at 17.5px 7.5px,#EFE3C8 7px,transparent 7.6px)}
+.mini{position:relative;display:inline-grid;place-items:center;flex:none;width:44px;height:32px;color:var(--forest)}
+.mini::before,.mini::after{content:"";position:absolute;top:50%;width:30px;height:30px;margin-top:-15px;border-radius:50%}
+.mini::before{left:0;background:#EFE3C8}
+.mini::after{right:0;background:#D9C39C;opacity:.8}
+.mini svg{position:relative;z-index:1;width:19px;height:19px}
 .lead{color:var(--muted);font-size:1.06rem;max-width:60ch}
 .head{display:grid;gap:10px;margin-bottom:22px}
 
@@ -133,7 +138,8 @@ p{margin:0}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:26px}
 .stat{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 14px 12px;min-width:0}
 .stat b{display:block;font-family:var(--display);font-weight:400;font-size:clamp(1.35rem,5vw,1.8rem);color:var(--forest);font-variant-numeric:tabular-nums;line-height:1.1}
-.stat span{font-size:.8rem;color:var(--muted);line-height:1.3;display:block;margin-top:4px}
+.stat .mini{margin-bottom:8px;display:grid}
+.stat small{font-size:.8rem;color:var(--muted);line-height:1.3;display:block;margin-top:4px}
 
 .collage{position:relative;height:clamp(340px,88vw,450px);max-width:520px;margin-inline:auto;width:100%;transition:opacity .8s,transform .8s cubic-bezier(.2,.8,.2,1)}
 .collage.pre{opacity:0;transform:scale(.86)}
@@ -145,6 +151,14 @@ p{margin:0}
 .dots{position:absolute;left:50%;bottom:0;transform:translateX(-50%);display:flex;gap:6px}
 .dots i{width:22px;height:4px;border-radius:4px;background:var(--line);transition:background .4s,width .4s}
 .dots i.on{background:var(--brass);width:34px}
+/* Tüyler: sabit duranlar salınır, "fall" olanlar yukarıdan aşağı süzülür */
+.feather{position:absolute;left:var(--x);top:var(--y,-14%);width:var(--w,26px);aspect-ratio:2/5;pointer-events:none;transform:rotate(var(--r,20deg));filter:drop-shadow(0 6px 7px rgba(29,44,38,.2))}
+.feather svg{width:100%;height:100%;animation:sway 5.5s ease-in-out infinite alternate;animation-delay:var(--dl,0s)}
+@keyframes sway{from{transform:translate(-9px,-6px) rotate(-14deg)}to{transform:translate(9px,8px) rotate(16deg)}}
+.feather.fall{animation:fall var(--d,20s) linear infinite;animation-delay:var(--dl,0s)}
+@keyframes fall{0%{top:-14%;opacity:0}8%{opacity:.9}90%{opacity:.9}100%{top:104%;opacity:0}}
+.feather.dk{display:none}
+@media(min-width:900px){.feather.dk{display:block}.feather.mb{display:none}}
 .float{position:absolute;pointer-events:none;opacity:.75;animation:bob 7s ease-in-out infinite}
 .float svg{width:100%;height:100%}
 .float.dk{display:none}
@@ -220,7 +234,7 @@ button.band-item:hover{color:var(--mdf)}
 .steps b{font-family:var(--display);font-weight:400;font-size:1.08rem;line-height:1.2}
 .facts{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
 .facts li{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-weight:600;font-size:.94rem;background:var(--paper)}
-.facts svg{width:20px;height:20px;color:var(--brass);flex:none}
+.facts li{padding:7px 16px 7px 8px}
 
 /* Referanslar: sohbet balonları iki sıra halinde ters yönlere akar */
 .talk{background:#E7E1D4;background-image:radial-gradient(rgba(29,44,38,.07) 1.2px,transparent 1.3px);background-size:18px 18px;padding-block:26px;display:grid;gap:16px;overflow:hidden;
@@ -247,8 +261,16 @@ button.band-item:hover{color:var(--mdf)}
 .ig p{color:rgba(251,251,248,.82);max-width:46ch}
 .ig-stats{display:flex;gap:24px;margin-block:18px 20px;font-size:1rem;color:rgba(251,251,248,.82)}
 .ig-stats b{color:#fff;font-size:1.15rem;font-variant-numeric:tabular-nums;margin-right:4px}
-.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.ig-grid .art{border-radius:14px;aspect-ratio:1/1}
+.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,2.4vw,18px);padding:6px}
+.ig-frame{position:relative;display:block;background:#FBFAF6;padding:7px 7px 22px;border-radius:5px;text-decoration:none;box-shadow:0 0 0 1px rgba(169,124,47,.55),inset 0 0 0 3px #fff,0 18px 26px -16px rgba(0,0,0,.75);transform:rotate(var(--tilt,0deg));transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+.ig-frame:nth-child(odd){--tilt:-2.2deg}
+.ig-frame:nth-child(even){--tilt:1.8deg}
+.ig-frame:nth-child(3n){--tilt:-1deg}
+.ig-frame:hover,.ig-frame:focus-visible{transform:rotate(0) scale(1.06);z-index:2;box-shadow:0 0 0 1px var(--brass),inset 0 0 0 3px #fff,0 26px 34px -16px rgba(0,0,0,.85)}
+.ig-frame .art{aspect-ratio:1/1;border-radius:2px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(29,44,38,.12)}
+.ig-frame::after{content:"";position:absolute;left:50%;bottom:8px;width:22px;height:5px;margin-left:-11px;border-radius:5px;background:var(--brass-soft)}
+.ig-frame .ig-badge{position:absolute;top:13px;right:13px;width:26px;height:26px;border-radius:50%;background:rgba(29,44,38,.78);color:#fff;display:grid;place-items:center}
+.ig-frame .ig-badge svg{width:14px;height:14px}
 
 /* İletişim */
 .contact{display:grid;gap:18px}
@@ -264,7 +286,8 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--brass);box-
 .info{display:grid;gap:16px}
 .info dt{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:700}
 .info dd{margin:2px 0 0;font-size:1.08rem;font-weight:600;user-select:all}
-.info dl{margin:0;display:grid;gap:14px}
+.info dl{margin:0;display:grid;gap:16px}
+.info-row{display:flex;align-items:center;gap:14px}
 .foot{background:var(--forest);color:rgba(251,251,248,.78);margin-top:clamp(16px,3vw,32px);position:relative;overflow:hidden}
 .foot::before{content:"Anka";position:absolute;right:-1%;bottom:-.2em;font-family:var(--script);font-style:italic;font-weight:600;font-size:clamp(9rem,34vw,22rem);line-height:1;color:rgba(251,251,248,.05);pointer-events:none}
 .foot-cta{display:flex;flex-wrap:wrap;gap:18px 32px;align-items:center;justify-content:space-between;padding-block:clamp(32px,6vw,56px);border-bottom:1px solid rgba(251,251,248,.14);position:relative}
@@ -280,7 +303,7 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--brass);box-
 .foot li a,.foot li button{background:none;border:0;padding:0;text-align:left;text-decoration:none;color:rgba(251,251,248,.84);font-weight:500;display:inline-block;transition:color .2s,transform .2s}
 .foot li a:hover,.foot li button:hover{color:#fff;transform:translateX(5px)}
 .foot-contact li{display:flex;gap:10px;align-items:center;color:var(--paper);font-weight:600;user-select:all}
-.foot-contact svg{width:18px;height:18px;color:var(--mdf);flex:none}
+.foot-contact li{gap:12px}
 .foot-soc{display:flex;gap:10px}
 .foot-soc a{width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(251,251,248,.28);display:grid;place-items:center;color:var(--paper);transition:background .2s,border-color .2s,transform .2s}
 .foot-soc a:hover{background:var(--brass);border-color:var(--brass);transform:translateY(-3px)}
@@ -412,11 +435,16 @@ html.js .rv:not(.in){opacity:.3;transform:translateY(26px)}
 
 <!-- HERO -->
 <div class="hero">
-  <span class="float dk" style="width:34px;height:34px;left:3%;top:9%"><svg viewBox="0 0 24 24"><use href="#i-leaf"/></svg></span>
-  <span class="float" style="width:22px;height:22px;right:9%;top:42%;animation-delay:-2s"><svg viewBox="0 0 24 24"><use href="#i-pearl"/></svg></span>
-  <span class="float dk" style="width:30px;height:30px;left:47%;top:4%;animation-delay:-4s"><svg viewBox="0 0 24 24"><use href="#i-arch"/></svg></span>
-  <span class="float" style="width:18px;height:18px;left:12%;bottom:8%;animation-delay:-1s"><svg viewBox="0 0 24 24"><use href="#i-pearl"/></svg></span>
-  <span class="float" style="width:28px;height:28px;right:4%;bottom:14%;animation-delay:-5s"><svg viewBox="0 0 24 24"><use href="#i-leaf"/></svg></span>
+  <span class="feather dk" style="--x:2%;--y:10%;--w:34px;--r:-28deg"><svg viewBox="0 0 40 100" aria-hidden="true"><use href="#i-feather-g"/></svg></span>
+  <span class="feather dk" style="--x:45%;--y:5%;--w:24px;--r:32deg;--dl:-3s"><svg viewBox="0 0 40 100" aria-hidden="true"><use href="#i-feather-w"/></svg></span>
+  <span class="feather" style="--x:91%;--y:34%;--w:28px;--r:42deg;--dl:-5s"><svg viewBox="0 0 40 100" aria-hidden="true"><use href="#i-feather-d"/></svg></span>
+  <span class="feather" style="--x:7%;--y:80%;--w:26px;--r:64deg;--dl:-2s"><svg viewBox="0 0 40 100" aria-hidden="true"><use href="#i-feather-w"/></svg></span>
+  <span class="feather dk" style="--x:54%;--y:84%;--w:24px;--r:-44deg;--dl:-6s"><svg viewBox="0 0 40 100" aria-hidden="true"><use href="#i-feather-g"/></svg></span>
+  <span class="feather mb" style="--x:84%;--y:1.5%;--w:26px;--r:-30deg"><svg viewBox="0 0 40 100" aria-hidden="true"><use href="#i-feather-g"/></svg></span>
+  <span class="feather fall" style="--x:22%;--w:20px;--r:18deg;--d:19s"><svg viewBox="0 0 40 100" aria-hidden="true"><use href="#i-feather-w"/></svg></span>
+  <span class="feather fall" style="--x:68%;--w:24px;--r:-22deg;--d:24s;--dl:-9s"><svg viewBox="0 0 40 100" aria-hidden="true"><use href="#i-feather-g"/></svg></span>
+  <span class="feather fall dk" style="--x:86%;--w:18px;--r:36deg;--d:28s;--dl:-16s"><svg viewBox="0 0 40 100" aria-hidden="true"><use href="#i-feather-w"/></svg></span>
+  <span class="feather fall" style="--x:40%;--w:16px;--r:-12deg;--d:31s;--dl:-21s"><svg viewBox="0 0 40 100" aria-hidden="true"><use href="#i-feather-d"/></svg></span>
 
   <div class="wrap hero-grid">
     <div>
@@ -434,9 +462,9 @@ html.js .rv:not(.in){opacity:.3;transform:translateY(26px)}
         <a class="btn btn-line" href="#urunler">Ürünleri Gör</a>
       </div>
       <div class="stats">
-        <div class="stat"><b data-count="147">147</b><span>ürün paylaşımı</span></div>
-        <div class="stat"><b data-count="3150">3.150</b><span>Instagram takipçisi</span></div>
-        <div class="stat"><b>CNC</b><span>kendi üretimimiz</span></div>
+        <div class="stat"><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-grid"/></svg></span><b data-count="147">147</b><small>ürün paylaşımı</small></div>
+        <div class="stat"><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ig"/></svg></span><b data-count="3150">3.150</b><small>Instagram takipçisi</small></div>
+        <div class="stat"><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cnc"/></svg></span><b>CNC</b><small>kendi üretimimiz</small></div>
       </div>
     </div>
 
@@ -489,10 +517,10 @@ html.js .rv:not(.in){opacity:.3;transform:translateY(26px)}
       <li><b>Teslim alın</b></li>
     </ol>
     <ul class="facts rv">
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-board"/></svg>1. sınıf MDF</li>
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cnc"/></svg>CNC işleme</li>
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ruler"/></svg>Özel ölçü</li>
-      <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-truck"/></svg>Elden teslim ya da kargo</li>
+      <li><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-board"/></svg></span>1. sınıf MDF</li>
+      <li><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cnc"/></svg></span>CNC işleme</li>
+      <li><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ruler"/></svg></span>Özel ölçü</li>
+      <li><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-truck"/></svg></span>Elden teslim ya da kargo</li>
     </ul>
     <p class="fine rv" style="margin-top:14px">Fiyat yalnızca WhatsApp ve DM'den verilir. Nakliye alıcıya aittir.</p>
   </div>
@@ -531,7 +559,7 @@ html.js .rv:not(.in){opacity:.3;transform:translateY(26px)}
           <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ig"/></svg>Instagram'da Takip Et
         </a>
       </div>
-      <div class="ig-grid" id="igGrid" aria-hidden="true"></div>
+      <div class="ig-grid" id="igGrid"></div>
     </div>
   </div>
 </section>
@@ -560,10 +588,10 @@ html.js .rv:not(.in){opacity:.3;transform:translateY(26px)}
       </form>
       <aside class="card info rv">
         <dl>
-          <div><dt>Telefon / WhatsApp</dt><dd>0555 438 58 98</dd></div>
-          <div><dt>Atölye</dt><dd>Pendik, İstanbul</dd></div>
-          <div><dt>Instagram</dt><dd>@organizasyonka</dd></div>
-          <div><dt>Teslimat</dt><dd>İstanbul içi elden, Türkiye geneli kargo</dd></div>
+          <div class="info-row"><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg></span><div><dt>Telefon / WhatsApp</dt><dd>0555 438 58 98</dd></div></div>
+          <div class="info-row"><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg></span><div><dt>Atölye</dt><dd>Pendik, İstanbul</dd></div></div>
+          <div class="info-row"><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ig"/></svg></span><div><dt>Instagram</dt><dd>@organizasyonka</dd></div></div>
+          <div class="info-row"><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-truck"/></svg></span><div><dt>Teslimat</dt><dd>İstanbul içi elden, Türkiye geneli kargo</dd></div></div>
         </dl>
       </aside>
     </div>
@@ -598,9 +626,9 @@ html.js .rv:not(.in){opacity:.3;transform:translateY(26px)}
     </nav>
     <div class="foot-last"><h3>İletişim</h3>
       <ul class="foot-contact">
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>0555 438 58 98</li>
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>Pendik, İstanbul</li>
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ig"/></svg>@organizasyonka</li>
+        <li><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg></span>0555 438 58 98</li>
+        <li><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg></span>Pendik, İstanbul</li>
+        <li><span class="mini"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ig"/></svg></span>@organizasyonka</li>
       </ul>
     </div>
   </div>
@@ -672,6 +700,10 @@ html.js .rv:not(.in){opacity:.3;transform:translateY(26px)}
   <symbol id="i-ruler" viewBox="0 0 24 24"><path d="M3 16L16 3l5 5L8 21zM7.5 11.5l2 2M10.5 8.5l2 2M13.5 5.5l2 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></symbol>
   <symbol id="i-truck" viewBox="0 0 24 24"><path d="M2.5 6.5h11v10h-11zM13.5 10h4l3.5 3.5v3h-7.5M7 19.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5a7 7 0 0 0-14 0C5 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.4" fill="currentColor"/></symbol>
+  <symbol id="i-feather-g" viewBox="0 0 40 100"><path d="M20 3C30 12 35 30 33 46l-6-2 5 8c-2 14-6 26-11 36l-1 10-1-10C13 78 9 64 8 52l5-2-6-6C6 28 11 12 20 3z" fill="#8FA596"/><path d="M20 10v86M20 28l-8-7M20 40l-9-8M20 62l-8-7M20 74l-6-5M20 28l8-7M20 38l10-8M20 60l9-8M20 72l6-5" stroke="#2A4037" stroke-width="1.1" stroke-linecap="round" fill="none" opacity=".55"/></symbol>
+  <symbol id="i-feather-d" viewBox="0 0 40 100"><path d="M20 3C30 12 35 30 33 46l-6-2 5 8c-2 14-6 26-11 36l-1 10-1-10C13 78 9 64 8 52l5-2-6-6C6 28 11 12 20 3z" fill="#4E7260"/><path d="M20 10v86M20 28l-8-7M20 40l-9-8M20 62l-8-7M20 74l-6-5M20 28l8-7M20 38l10-8M20 60l9-8M20 72l6-5" stroke="#F3F4EF" stroke-width="1.1" stroke-linecap="round" fill="none" opacity=".6"/></symbol>
+  <symbol id="i-feather-w" viewBox="0 0 40 100"><path d="M20 3C30 12 35 30 33 46l-6-2 5 8c-2 14-6 26-11 36l-1 10-1-10C13 78 9 64 8 52l5-2-6-6C6 28 11 12 20 3z" fill="#FFFFFF" stroke="#C5D1C8" stroke-width="1"/><path d="M20 10v86M20 28l-8-7M20 40l-9-8M20 62l-8-7M20 74l-6-5M20 28l8-7M20 38l10-8M20 60l9-8M20 72l6-5" stroke="#8FA596" stroke-width="1.1" stroke-linecap="round" fill="none" opacity=".8"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
   <symbol id="i-zoom" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
 </svg>
 
@@ -910,7 +942,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeProduc
 (function(){var m=/^#urun-(ank-\d+)$/.exec(location.hash);if(m) openProduct(m[1].toUpperCase());})();
 
 /* ---------- Instagram ızgarası ---------- */
-$('#igGrid').innerHTML=['ANK-101','ANK-201','ANK-301','ANK-501','ANK-603','ANK-102'].map(function(k,i){return '<div class="art" style="--t:'+TINTS[i%4]+'">'+media(byKod(k))+'</div>';}).join('');
+$('#igGrid').innerHTML=[['ANK-101','Db5kGXpNIjW'],['ANK-201','DX377EIDR9Y'],['ANK-301','DYpRzmlttUA'],['ANK-501','DR9KlqrDWMf'],['ANK-603','DUjGv0qDa1-'],['ANK-102','DFvGeuFtulp']].map(function(g,i){
+  var pr=byKod(g[0]);
+  return '<a class="ig-frame" href="https://www.instagram.com/p/'+g[1]+'/" target="_blank" rel="noopener" aria-label="'+esc(pr.ad)+', Instagram gönderisini aç"><span class="art" style="--t:'+TINTS[i%4]+'">'+media(pr)+'</span><span class="ig-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-ig"/></svg></span></a>';
+}).join('');
 
 /* ---------- İletişim formu → WhatsApp ---------- */
 $('#fProd').innerHTML='<option value="">Henüz karar vermedim</option>'+PRODUCTS.map(function(p){return '<option>'+esc(p.ad)+'</option>';}).join('')+'<option>Özel tasarım</option>';
