@@ -285,6 +285,40 @@ label{display:grid;gap:6px;font-weight:600;font-size:.92rem}
 input,select,textarea{font:inherit;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;width:100%;min-width:0}
 textarea{min-height:92px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:0;border-color:var(--brass);box-shadow:0 0 0 3px rgba(169,124,47,.2)}
+.field{display:grid;gap:6px;font-weight:600;font-size:.92rem}
+.date-btn{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;width:100%;font:inherit;font-weight:500;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;min-height:52px;color:var(--ink)}
+.date-btn[aria-expanded="true"]{border-color:var(--brass);box-shadow:0 0 0 3px rgba(169,124,47,.2)}
+.date-btn .ph{color:#7C847E}
+.date-btn .caret{margin-left:auto;color:var(--brass);transition:transform .3s}
+.date-btn[aria-expanded="true"] .caret{transform:rotate(180deg)}
+.date-state{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:5px 12px;font-weight:700;font-size:.84rem;white-space:nowrap}
+.date-state::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.date-state.ok{background:#E0F2E6;color:#17663A}
+.date-state.az{background:#FBEFD6;color:#8A5A00}
+.date-state.dolu{background:#F6E2DD;color:#9A3A2E}
+.cal{border:1.5px solid var(--line);border-radius:18px;padding:14px;background:#fff;display:grid;gap:12px;font-weight:500;animation:rise .3s}
+.cal-head{display:flex;justify-content:space-between;align-items:center}
+.cal-head b{font-family:var(--display);font-weight:400;font-size:1.2rem}
+.cal-nav{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:var(--paper);font-size:1.1rem;line-height:1}
+.cal-nav:disabled{opacity:.35;cursor:default}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-grid .wd{font-size:.68rem;font-weight:700;color:var(--muted);text-align:center;text-transform:uppercase;letter-spacing:.05em;padding-bottom:2px}
+.day{position:relative;aspect-ratio:1;min-height:40px;border:0;border-radius:12px;background:#EAF4EC;color:#14532D;font-weight:700;font-size:.95rem;display:grid;place-items:center;padding:0 0 7px;transition:transform .15s,box-shadow .15s}
+.day::after{content:"";position:absolute;bottom:5px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#1FA855}
+.day.az{background:#FBF1DC;color:#7A4F00}
+.day.az::after{background:#D9972B;width:12px;margin-left:-6px;border-radius:3px}
+.day.dolu{background:#F6E6E2;color:#A6584C;text-decoration:line-through;cursor:not-allowed}
+.day.dolu::after{background:#C2513F;width:10px;height:2px;margin-left:-5px;bottom:7px;border-radius:2px}
+.day.gecmis{background:none;color:#B9BEB8;font-weight:500;cursor:default}
+.day.gecmis::after{display:none}
+.day.bugun{box-shadow:inset 0 0 0 1.5px var(--line)}
+.day.ok:hover,.day.az:hover{transform:scale(1.08);box-shadow:0 0 0 2px var(--brass)}
+.day.sel{background:var(--forest);color:#fff;box-shadow:0 8px 16px -8px rgba(29,44,38,.8)}
+.day.sel::after{background:#fff}
+.cal-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.84rem;color:var(--muted);align-items:center}
+.cal-legend span{display:inline-flex;align-items:center;gap:7px}
+.cal-legend i{width:10px;height:10px;border-radius:50%}
+.cal-msg{font-size:.9rem;font-weight:600;color:#9A3A2E}
 .info{display:grid;gap:16px}
 .info dt{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:700}
 .info dd{margin:2px 0 0;font-size:1.08rem;font-weight:600;user-select:all}
@@ -596,6 +630,29 @@ html.js .rv:not(.in){opacity:.3;transform:translateY(26px)}
         <div class="row">
           <label for="fProd">İlgilendiğiniz ürün<select id="fProd"></select></label>
           <label for="fQty">Adet<input id="fQty" type="number" min="1" inputmode="numeric" placeholder="1"></label>
+        </div>
+        <div class="field">
+          <span id="fDateLbl">İstenen teslim tarihi</span>
+          <button type="button" class="date-btn" id="fDateBtn" aria-expanded="false" aria-controls="cal" aria-labelledby="fDateLbl fDateTxt">
+            <span id="fDateTxt" class="ph">Tarih seçin</span>
+            <span class="date-state" id="fDateState" hidden></span>
+            <span class="caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="cal" id="cal" hidden>
+            <div class="cal-head">
+              <button type="button" class="cal-nav" id="calPrev" aria-label="Önceki ay">‹</button>
+              <b id="calTitle" aria-live="polite"></b>
+              <button type="button" class="cal-nav" id="calNext" aria-label="Sonraki ay">›</button>
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+            <p class="cal-msg" id="calMsg" hidden></p>
+            <div class="cal-legend">
+              <span><i style="background:#1FA855"></i>Boş yer var</span>
+              <span><i style="background:#D9972B"></i>Az yer kaldı</span>
+              <span><i style="background:#C2513F"></i>Dolu</span>
+              <span id="calNote" hidden>Doluluk bilgisi örnektir.</span>
+            </div>
+          </div>
         </div>
         <label for="fNote">Notunuz<textarea id="fNote" placeholder="Ölçü, renk, istediğiniz tarih..."></textarea></label>
         <a class="btn btn-wa" id="fSend" target="_blank" rel="noopener">
@@ -975,11 +1032,59 @@ function formLink(){
   if(v('#fProd')) l.push('Ürün: '+v('#fProd'));
   if(v('#fQty'))  l.push('Adet: '+v('#fQty'));
   if(v('#fCity')) l.push('Şehir: '+v('#fCity'));
+  if(window.__tarih) l.push('İstenen teslim tarihi: '+window.__tarih);
   if(v('#fNote')) l.push('Not: '+v('#fNote'));
   l.push('Fiyat ve termin bilgisi alabilir miyim?');
   $('#fSend').href=wa(l.join('\n'));
 }
 $('#form').addEventListener('input',formLink); $('#form').addEventListener('submit',function(e){e.preventDefault();}); formLink();
+
+/* ---------- Teslim tarihi takvimi ---------- */
+/* Firma dolu ve az yer kalan günlerini 'YYYY-AA-GG' biçiminde buraya yazar. İkisi de boşsa örnek doluluk gösterilir. */
+var DOLU=[], AZ=[];
+(function(){
+  var AY=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  var GUN=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+  var LBL={ok:'Boş yer var',az:'Az yer kaldı',dolu:'Dolu'};
+  var today=new Date(); today.setHours(0,0,0,0);
+  function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+  function plus(n){var d=new Date(today);d.setDate(d.getDate()+n);return iso(d);}
+  var ornek=DOLU.length===0&&AZ.length===0;
+  if(ornek){[2,3,9,10,16,24,31,38].forEach(function(n){DOLU.push(plus(n));});[4,5,11,17,23,30,37].forEach(function(n){AZ.push(plus(n));});}
+  $('#calNote').hidden=!ornek;
+  var view=new Date(today.getFullYear(),today.getMonth(),1), first=new Date(view), sel='';
+  var btn=$('#fDateBtn'), cal=$('#cal'), grid=$('#calGrid'), msg=$('#calMsg');
+  function state(d){if(d<=today) return 'gecmis';var k=iso(d);return DOLU.indexOf(k)>-1?'dolu':AZ.indexOf(k)>-1?'az':'ok';}
+  function long(d){return d.getDate()+' '+AY[d.getMonth()]+' '+d.getFullYear()+' '+GUN[d.getDay()];}
+  function render(){
+    var y=view.getFullYear(), m=view.getMonth(), n=new Date(y,m+1,0).getDate(), off=(new Date(y,m,1).getDay()+6)%7;
+    $('#calTitle').textContent=AY[m]+' '+y;
+    var h=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'].map(function(w){return '<span class="wd">'+w+'</span>';}).join('');
+    for(var i=0;i<off;i++) h+='<span></span>';
+    for(var g=1;g<=n;g++){
+      var d=new Date(y,m,g), st=state(d), k=iso(d);
+      h+='<button type="button" class="day '+st+(k===sel?' sel':'')+(d.getTime()===today.getTime()?' bugun':'')+'" data-d="'+k+'" data-st="'+st+'"'+(st==='gecmis'?' disabled':'')+(st==='dolu'?' aria-disabled="true"':'')+' aria-label="'+long(d)+(LBL[st]?', '+LBL[st]:'')+'">'+g+'</button>';
+    }
+    grid.innerHTML=h;
+    $('#calPrev').disabled=(y===first.getFullYear()&&m===first.getMonth());
+    $('#calNext').disabled=((y-first.getFullYear())*12+m-first.getMonth())>=5;
+  }
+  function toggle(open){cal.hidden=!open;btn.setAttribute('aria-expanded',open?'true':'false');if(open){msg.hidden=true;render();}}
+  btn.addEventListener('click',function(){toggle(cal.hidden);});
+  $('#calPrev').addEventListener('click',function(){view.setMonth(view.getMonth()-1);render();});
+  $('#calNext').addEventListener('click',function(){view.setMonth(view.getMonth()+1);render();});
+  grid.addEventListener('click',function(e){
+    var b=e.target.closest('.day'); if(!b) return;
+    var st=b.getAttribute('data-st'), p=b.getAttribute('data-d').split('-'), d=new Date(+p[0],+p[1]-1,+p[2]);
+    if(st==='gecmis') return;
+    if(st==='dolu'){msg.textContent=d.getDate()+' '+AY[d.getMonth()]+' dolu. Lütfen başka bir gün seçin.';msg.hidden=false;return;}
+    sel=b.getAttribute('data-d'); window.__tarih=long(d)+(st==='az'?' (az yer kaldı)':'');
+    $('#fDateTxt').textContent=long(d); $('#fDateTxt').className='';
+    var chip=$('#fDateState'); chip.textContent=LBL[st]; chip.className='date-state '+st; chip.hidden=false;
+    formLink(); toggle(false);
+  });
+  render();
+})();
 
 /* ---------- Canlı WhatsApp ---------- */
 var panel=$('#waPanel'), fab=$('#waFab'), tease=$('#waTease');
